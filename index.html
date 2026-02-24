@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>The [MDD] FILES</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: white;
+      font-family: 'Rajdhani', sans-serif;
+      color: black;
+      min-height: 100vh;
+      border: 5px solid black;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 60%, #0d1117 100%);
+      border-bottom: 1px solid #30363d;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.6);
+      position: relative;
+      overflow: hidden;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(255,255,255,0.01) 2px, rgba(255,255,255,0.01) 4px
+      );
+      pointer-events: none;
+    }
+
+    .home-link {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      text-decoration: none;
+      cursor: pointer;
+      z-index: 1;
+    }
+
+    .logo-wrapper {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .logo-wrapper::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(180, 60, 60, 0.5);
+      animation: pulse-ring 2.8s ease-in-out infinite;
+    }
+
+    @keyframes pulse-ring {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50%       { opacity: 1;   transform: scale(1.06); }
+    }
+
+    .logo-img {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: block;
+      filter: drop-shadow(0 0 10px rgba(200, 50, 50, 0.4));
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      line-height: 1.15;
+    }
+
+    .brand-text span {
+      display: block;
+      font-family: 'Cinzel', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: white;
+      text-shadow: 0 0 12px rgba(200, 60, 60, 0.5);
+      text-transform: uppercase;
+    }
+
+    .brand-text span:nth-child(2) { font-size: 1.05rem; }
+    .brand-text span:nth-child(3) { font-size: 0.95rem; letter-spacing: 0.2em; }
+
+    nav {
+      display: flex;
+      gap: 28px;
+      position: relative;
+      z-index: 1;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #8b949e;
+      text-decoration: none;
+      transition: color 0.2s, text-shadow 0.2s;
+      padding: 4px 0;
+      position: relative;
+      cursor: pointer;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: #c03030;
+      transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+
+    nav a:hover, nav a.active {
+      color: #e6edf3;
+      text-shadow: 0 0 8px rgba(200, 60, 60, 0.6);
+    }
+
+    nav a:hover::after, nav a.active::after {
+      transform: scaleX(1);
+    }
+
+    /* ── PAGES ── */
+    .page { display: none; padding: 20px; flex: 1; }
+    .page.active { display: block; }
+
+    hr { border: none; border-top: 1px solid #ccc; margin: 12px 0; }
+    hr.new1 { border-top: 3px solid black; }
+
+    span.redacted {
+      color: black;
+      background-color: black;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+    img.redacted {
+  filter: brightness(0);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  pointer-events: none; /* prevents right-click saving */
+}
+
+    /* ── HOME PAGE ── */
+    #page-home h1 { font-family: 'Cinzel', serif; letter-spacing: 0.1em; margin: 12px 0 4px; }
+    #page-home table { width: 500px; max-width: 100%; padding: 10px; }
+    #page-home ul { padding: 10px; padding-left: 24px; }
+
+    /* ── CASES PAGE ── */
+    #page-cases h2, #page-database h2, #page-contact h2, #page-hinder h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.6rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+
+    .cases-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 18px;
+      margin-top: 12px;
+    }
+
+    .case-card {
+      border: 2px solid black;
+      padding: 16px;
+      position: relative;
+      background: white;
+      transition: box-shadow 0.2s;
+    }
+
+    .case-card:hover { box-shadow: 4px 4px 0 black; }
+
+    .case-card .case-id {
+      font-family: 'Cinzel', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      color: #c03030;
+      margin-bottom: 6px;
+    }
+
+    .case-card h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .case-card p {
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #333;
+    }
+
+    .case-card .status {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      padding: 2px 8px;
+      border: 1px solid black;
+      text-transform: uppercase;
+    }
+
+    .status.open { border-color: #c03030; color: #c03030; }
+    .status.closed { background: black; color: white; }
+    .status.classified { background: black; color: black; border: none; user-select: none; }
+
+    /* ── DATABASE PAGE ── */
+    .db-table {
+      width: 100%;
+      max-width: 720px;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 0.95rem;
+    }
+
+    .db-table th {
+      background: #0d1117;
+      color: white;
+      font-family: 'Cinzel', serif;
+      letter-spacing: 0.1em;
+      padding: 10px 14px;
+      text-align: left;
+      border: 1px solid #30363d;
+    }
+
+    .db-table td {
+      padding: 9px 14px;
+      border: 1px solid #ccc;
+      vertical-align: top;
+    }
+
+    .db-table tr:nth-child(even) td { background: #f8f8f8; }
+    .db-table tr:hover td { background: #f0f0f0; }
+
+    .threat-low    { color: green;   font-weight: 700; }
+    .threat-medium { color: #b07000; font-weight: 700; }
+    .threat-high   { color: #c03030; font-weight: 700; }
+    .threat-leathal {color black; font-weight: 700;}
+    .threat-unknown { color: black; background: black; user-select: none; font-weight: 700; }
+
+    /* ── CONTACT PAGE ── */
+    .contact-block {
+      max-width: 540px;
+      border: 2px solid black;
+      padding: 24px;
+      margin-top: 12px;
+    }
+
+    .contact-block p { line-height: 1.7; margin-bottom: 12px; font-size: 1rem; }
+    .contact-block a { color: #c03030; font-weight: 700; }
+
+    .contact-field {
+      margin-bottom: 14px;
+    }
+
+    .contact-field label {
+      display: block;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      margin-bottom: 4px;
+    }
+
+    .contact-field input,
+    .contact-field textarea {
+      width: 100%;
+      border: 1.5px solid black;
+      padding: 8px 10px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 0.95rem;
+      background: white;
+      resize: vertical;
+    }
+
+    .contact-field input:focus,
+    .contact-field textarea:focus {
+      outline: none;
+      border-color: #c03030;
+      box-shadow: 0 0 0 2px rgba(192,48,48,0.15);
+    }
+
+    .submit-btn {
+      font-family: 'Cinzel', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: #0d1117;
+      color: white;
+      border: 2px solid black;
+      padding: 10px 28px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .submit-btn:hover { background: #c03030; }
+
+    /* ── H.I.N.D.E.R. PAGE ── */
+    .hinder-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 18px;
+      margin-top: 16px;
+      max-width: 900px;
+    }
+
+    .hinder-card {
+      border: 2px solid black;
+      padding: 18px;
+      position: relative;
+    }
+
+    .hinder-letter {
+      font-family: 'Cinzel', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #c03030;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .hinder-word {
+      font-family: 'Cinzel', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      border-bottom: 2px solid black;
+      padding-bottom: 6px;
+    }
+
+    .hinder-card p {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: #222;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 60%, #0d1117 100%);
+      border-top: 1px solid #30363d;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.6);
+      position: relative;
+      overflow: hidden;
+      color: white;
+      margin-top: auto;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(255,255,255,0.01) 2px, rgba(255,255,255,0.01) 4px
+      );
+      pointer-events: none;
+    }
+
+    footer a {
+      color: #8b949e;
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      z-index: 1;
+      transition: color 0.2s;
+    }
+
+    footer a:hover { color: white; }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="home-link" onclick="showPage('home')">
+      <div class="logo-wrapper">
+        <img class="logo-img"
+          src="https://yt3.googleusercontent.com/ejD5jA9rj_0a6_Kv1IGmpDMpvSv1EoMxsZRtAbnztedtch86lOk4Ua_6-g8fktHyDb7y3ivl=s160-c-k-c0x00ffffff-no-rj"
+          alt="MDD Logo">
+      </div>
+      <div class="brand-text">
+        <span>Mimic</span>
+        <span>Detection</span>
+        <span>Department</span>
+      </div>
+    </div>
+
+    <nav>
+      <a id="nav-cases"    onclick="showPage('cases')">Cases</a>
+      <a id="nav-database" onclick="showPage('database')">Database</a>
+      <a id="nav-contact"  onclick="showPage('contact')">Contact</a>
+      <a id="nav-hinder"   onclick="showPage('hinder')">H.I.N.D.E.R.</a>
+    </nav>
+  </header>
+
+  <!-- ══════════════ HOME PAGE ══════════════ -->
+  <div id="page-home" class="page active">
+    <br>
+    <hr>
+    <br>
+    <table style="width:500px; max-width:100%; padding:10px;">
+      <tr><td><h2>Welcome to the Mimic Detection Department</h2></td></tr>
+      <tr>
+        <td>
+          <p>Here we document mysterious anomalies called "Mimics". These anomalies are <span class="redacted">very dangerous</span> and we advise you to stay away when encountering them. Remember the <strong>H.I.N.D.E.R.</strong> principle. There is a large threat mainly in the areas of South Dakota, Iowa, Nebraska, and Minnesota. Stay Safe.</p>
+          <br><p>-<b>Mimic Detection Department</b></p>
+        </td>
+      </tr>
+    </table>
+    <br>
+    <h1>CLASSIFIED</h1>
+    <hr class="new1">
+    <table style="border:solid black 2px; max-width:500px; margin:5px; padding:10px;">
+      <tr><td><b>There are <span class="redacted">09</span> known "Mimic" types:</b></td></tr>
+      <tr>
+        <td>
+          <ul style="padding:10px; padding-left:24px;">
+            
+            <li><span class="redacted">The God</span></li>
+            <li>Mimic</li>
+            <li>Doppelgänger</li>
+            <li>Preacher</li>
+            <li>Clusters</li>
+            <li>Inhuman</li>
+            <li>Duplicate</li>
+            <li>Tree Hugger</li>
+            <li><span class="redacted">MOLD</span></li>
+            
+          </ul>
+        </td>
+      </tr>
+    </table>
+    <h1>READ</h1>
+    <hr class="new1">
+    <h1>DISCOVER</h1>
+    <hr class="new1">
+    <br>
+  </div>
+
+  <!-- ══════════════ CASES PAGE ══════════════ -->
+  <div id="page-cases" class="page">
+    <br>
+    <hr>
+    <br>
+    <h2>Case Files</h2>
+    <p style="max-width:600px; line-height:1.7;">The following are documented encounters and investigations conducted by the Mimic Detection Department. All information is considered sensitive. Handle accordingly.</p>
+    <br>
+    <p>All available footage is provided.</p>
+
+    <div class="cases-grid">
+
+      <div class="case-card">
+        <div class="case-id"><a href="https://www.youtube.com/watch?v=oHnS2Y9ewdc" target="_blank">CASE FILE #001 FOOTAGE-01</a></div>
+        <h3>NAME</h3>
+        <p>DESCRIPTION</p>
+        <span class="status open">Open</span>
+      </div>
+
+      <div class="case-card">
+        <div class="case-id"><a href="https://www.youtube.com/watch?v=LSkqnN82CNs" target="_blank">CASE FILE #002 - FOOTAGE-01</a>
+<a href="https://www.youtube.com/watch?v=DOQODL4GMYU" target="_blank">CASE FILE #002 - FOOTAGE-02</a></div>
+        <h3>The Preacher of <span class="redacted">██████</span></h3>
+        <p>DESCCRIPTION</p>
+        <span class="status closed">closed</span>
+      </div>
+
+      <div class="case-card">
+        <div class="case-id"><a href="https://www.youtube.com/watch?v=NJDzszsi8SY" target="_blank">CASE FILE #003 FOOTAGE-01</a></div>
+        <h3><span class="redacted">BROADCAST</span> HIJACKING</h3>
+        <p>DESCRIPTION</p>
+        <span class="status open">Open</span>
+      </div>
+
+      <div class="case-card">
+        <div class="case-id">CASE FILE #004</div>
+        <h3>NAME</h3>
+        <p>DESCRIPTION</p>
+        <span class="status open">Open</span>
+      </div>
+
+      <div class="case-card">
+        <div class="case-id">CASE FILE #005</div>
+        <h3>NAME</h3>
+        <p>DESCRIPTION</p>
+        <span class="status open">Open</span>
+      </div>
+
+      <div class="case-card">
+        <div class="case-id">CASE FILE <span class="redacted">#006</span></div>
+        <h3><span class="redacted">THE GOD</span></h3>
+        <p><span class="redacted">Opened a gate to Heaven. Something emerged. We don't know what to do. This thing has been making noises that reach up to 315 db.</span> THERE IS NO FOOTAGE.</p>
+        <span class="status classified">CLASSIFIED</span>
+      </div>
+
+    </div>
+    <br>
+  </div>
+
+  <!-- ══════════════ DATABASE PAGE ══════════════ -->
+  <div id="page-database" class="page">
+    <br>
+    <hr>
+    <br>
+    <h2>M.D.D. database</h2>
+    <p style="max-width:640px; line-height:1.7; margin-bottom:4px;">Catalogued Mimic classifications as recorded by MDD field agents. Threat levels are approximate. Exercise extreme caution when encountering any of the following.</p>
+    <br>
+    <table class="db-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Classification</th>
+          <th>Primary Behavior</th>
+          <th>Threat Level</th>
+          <th>First Documented</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>01</td>
+          <td><strong>Mimic</strong></td>
+          <td>Copies the appearance and voice of known individuals.</td>
+          <td class="threat-high">HIGH</td>
+          <td>1987</td>
+        </tr>
+        <tr>
+          <td>02</td>
+          <td><strong>Doppelgänger</strong></td>
+          <td>Near-perfect biological duplicate. Difficult to distinguish.</td>
+          <td class="threat-high">HIGH</td>
+          <td>2001</td>
+        </tr>
+        <tr>
+          <td>03</td>
+          <td><strong>Preacher</strong></td>
+          <td>Spreads influence through speech. May have psychic properties. TEARS FACE OFF AND USES IT AS ITS OWN.</td>
+          <td class="threat-medium">MEDIUM</td>
+          <td>2015</td>
+        </tr>
+        <tr>
+          <td>04</td>
+          <td><strong>Clusters</strong></td>
+          <td>Releases toxin <span class="redacted">Virus-M</span> when touched instantly, there is no cure.</td>
+          <td class="threat-unknown">██████</td>
+          <td><span class="redacted">████</span></td>
+        </tr>
+        <tr>
+          <td>05</td>
+          <td><strong>Inhuman</strong></td>
+          <td>Tall, lengthy entity that feeds using it's cup-like hands (NO ONE KNOWS HOW).</td>
+          <td class="threat-high">HIGH</td>
+          <td>1995</td>
+        </tr>
+        <tr>
+          <td>06</td>
+          <td><strong>Duplicate</strong></td>
+          <td>Copies appearance of a random household item and takes its place, (HARMLESS) (NOT CONFIRMED LIVING)</td>
+          <td class="threat-low">LOW</td>
+          <td>2007</td>
+        </tr>
+        <tr>
+          <td>07</td>
+          <td><strong>Tree Hugger</strong></td>
+          <td>Blends with natural environments. Difficult to detect in rural areas.</td>
+          <td class="threat-medium">MEDIUM</td>
+          <td>2022</td>
+        </tr>
+        <tr>
+          <td>08</td>
+          <td><span class="redacted">MOLD</span></td>
+          <td>All mimic life seems to stem from the tentrals of <span class="redacted">the Mold</span>. <span class="redacted">The Mold</span> is the most dangerous type of "mimic" discovered until the discovery of <span class="redacted">the God.</span> Turns out, <span class="redacted">the Mold</span> was created by <span class="redacted">The God</span>. This means that this type of mimic is not the most deadly type, and there is one more that transcends humanity.</td>
+          <td class="threat-leathal">LETHAL</td>
+          <td><span class="redacted">████</span></td>
+        </tr>
+        <tr>
+          <td>00</td>
+          <td><span class="redacted">The God</span></td>
+          <td><span class="redacted">The highest rank of any living thing. This spiritual entity's motives are unknown and undocumented.</span></td>
+          <td class="threat-leathal">L<span class="redacted">ORD</span></td>
+          <td> ~ <span class="redacted">4000</span> – <span class="redacted">3000</span> BC.</td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+    <br>
+    <h2>FILE IMAGES</h2>
+    <hr class="new1">
+    <div style="text-align: center">
+    <img src="https://i.postimg.cc/Z5js1fjG/1.png">
+      <br>
+    <img src="https://i.postimg.cc/rwgZvhQc/2.png">
+      <br>
+    <img src="https://i.postimg.cc/qvQD9mjJ/3.png">
+      <br>
+    <img src="https://i.postimg.cc/L8vQryNH/4.png">
+      <br>
+      <span class="redacted">
+    <img class="redacted" src="https://i.postimg.cc/g24tfMNG/5.png">
+      </span>
+      <br>
+    </div>
+  </div>
+
+  <!-- ══════════════ CONTACT PAGE ══════════════ -->
+  <div id="page-contact" class="page">
+    <br>
+    <hr>
+    <br>
+    <h2>Contact</h2>
+    <div class="contact-block">
+      <p>If you have witnessed an anomaly or suspect Mimic activity in your area, report it below. All submissions are reviewed by MDD field agents. Do not include your full name or address in the message body.</p>
+      <p>For urgent matters, visit our YouTube channel: <a href="https://www.youtube.com/channel/UCY7NjU6fUswa8-qY4ObQAFQ" target="_blank">The [MDD] FILES</a></p>
+      <hr style="margin:16px 0;">
+      <div class="contact-field">
+        <label>Codename / Alias</label>
+        <input type="text" placeholder="e.g. AGENT-07">
+      </div>
+      <div class="contact-field">
+        <label>Incident Location (General)</label>
+        <input type="text" placeholder="e.g. Sioux Falls, SD">
+      </div>
+      <div class="contact-field">
+        <label>Report</label>
+        <textarea rows="5" placeholder="Describe what you witnessed..."></textarea>
+      </div>
+      <button class="submit-btn">Submit Report</button>
+    </div>
+    <br>
+  </div>
+
+  <!-- ══════════════ H.I.N.D.E.R. PAGE ══════════════ -->
+  <div id="page-hinder" class="page">
+    <br>
+    <hr>
+    <br>
+    <h2>H.I.N.D.E.R. Protocol</h2>
+    <p style="max-width:640px; line-height:1.7;">The H.I.N.D.E.R. principle is the MDD's core survival framework for civilians and agents who encounter potential Mimic activity. Memorize it. It may save your life.</p>
+    <div class="hinder-grid">
+
+      <div class="hinder-card">
+        <div class="hinder-letter">H</div>
+        <div class="hinder-word">Hide</div>
+        <p>Description</p>
+      </div>
+
+      <div class="hinder-card">
+        <div class="hinder-letter">I</div>
+        <div class="hinder-word">Identify</div>
+        <p>Look for signs of abnormal behavior: repetition of phrases, unusual stillness, eyes that do not track normally, or slight physical irregularities.</p>
+      </div>
+
+      <div class="hinder-card">
+        <div class="hinder-letter">N</div>
+        <div class="hinder-word">Neutralize</div>
+        <p>Description</p>
+      </div>
+
+      <div class="hinder-card">
+        <div class="hinder-letter">D</div>
+        <div class="hinder-word">Detect</div>
+        <p>Description</p>
+      </div>
+
+      <div class="hinder-card">
+        <div class="hinder-letter">E</div>
+        <div class="hinder-word">Emphasize</div>
+        <p>Description</p>
+      </div>
+
+      <div class="hinder-card">
+        <div class="hinder-letter">R</div>
+        <div class="hinder-word">Record</div>
+        <p>Description</p>
+      </div>
+
+    </div>
+    <br>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <a href="https://www.youtube.com/channel/UCY7NjU6fUswa8-qY4ObQAFQ" target="_blank">The [MDD] FILES</a>
+    <span style="font-size:0.75rem; color:#444; z-index:1;">Mimic Detection Department — All Rights Reserved</span>
+  </footer>
+  
+  <!--JAVASCRIPT-->
+  <script>
+    function showPage(id) {
+      // Hide all pages
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      // Remove active from all nav links
+      document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+
+      // Show selected page
+      var target = document.getElementById('page-' + id);
+      if (target) target.classList.add('active');
+
+      // Highlight nav link
+      var navLink = document.getElementById('nav-' + id);
+      if (navLink) navLink.classList.add('active');
+
+      // Scroll to top
+      window.scrollTo(0, 0);
+    }
+  </script>
+
+</body>
+</html>
